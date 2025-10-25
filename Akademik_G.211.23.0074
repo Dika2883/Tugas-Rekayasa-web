@@ -1,0 +1,268 @@
+openapi: "3.0.2"
+info:
+  title: API Akademik Mahasiswa
+  description: API untuk mengelola data mahasiswa, mata kuliah, dan nilai di sistem akademik universitas.
+  version: "1.0.0"
+  contact:
+    name: Admin Akademik
+    email: admin@universitas.ac.id
+
+servers:
+  - url: https://api.akademik-univ.com/v1
+    description: Production server
+  - url: https://staging.akademik-univ.com/v1
+    description: Staging server
+
+tags:
+  - name: Mahasiswa
+    description: Endpoint untuk mengelola data mahasiswa
+  - name: Mata Kuliah
+    description: Endpoint untuk mengelola data mata kuliah
+  - name: Nilai
+    description: Endpoint untuk mengelola nilai mahasiswa
+
+paths:
+  /mahasiswa:
+    get:
+      tags:
+        - Mahasiswa
+      summary: Mendapatkan daftar semua mahasiswa
+      description: Mengambil data semua mahasiswa yang terdaftar di sistem
+      responses:
+        '200':
+          description: Daftar mahasiswa berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Mahasiswa'
+    post:
+      tags:
+        - Mahasiswa
+      summary: Menambahkan data mahasiswa baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MahasiswaInput'
+      responses:
+        '201':
+          description: Mahasiswa baru berhasil ditambahkan
+
+  /mahasiswa/{NIM}:
+    get:
+      tags:
+        - Mahasiswa
+      summary: Mendapatkan detail mahasiswa berdasarkan NIM
+      parameters:
+        - name: NIM
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detail mahasiswa berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mahasiswa'
+        '404':
+          description: Mahasiswa tidak ditemukan
+
+    put:
+      tags:
+        - Mahasiswa
+      summary: Memperbarui data mahasiswa
+      parameters:
+        - name: NIM
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MahasiswaInput'
+      responses:
+        '200':
+          description: Data mahasiswa berhasil diperbarui
+        '404':
+          description: Mahasiswa tidak ditemukan
+
+    delete:
+      tags:
+        - Mahasiswa
+      summary: Menghapus data mahasiswa
+      parameters:
+        - name: NIM
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Data mahasiswa berhasil dihapus
+
+  /matakuliah:
+    get:
+      tags:
+        - Mata Kuliah
+      summary: Mendapatkan daftar semua mata kuliah
+      responses:
+        '200':
+          description: Daftar mata kuliah berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MataKuliah'
+    post:
+      tags:
+        - Mata Kuliah
+      summary: Menambahkan mata kuliah baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MataKuliahInput'
+      responses:
+        '201':
+          description: Mata kuliah baru berhasil ditambahkan
+
+  /nilai:
+    get:
+      tags:
+        - Nilai
+      summary: Mendapatkan daftar nilai mahasiswa
+      responses:
+        '200':
+          description: Daftar nilai berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Nilai'
+    post:
+      tags:
+        - Nilai
+      summary: Menambahkan data nilai mahasiswa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NilaiInput'
+      responses:
+        '201':
+          description: Data nilai berhasil ditambahkan
+
+components:
+  schemas:
+    Mahasiswa:
+      type: object
+      properties:
+        NIM:
+          type: string
+          example: "G.211.23.0074"
+        Nama:
+          type: string
+          example: "Dika Aprlian Arangga"
+        Prodi:
+          type: string
+          example: "Teknik Informatika"
+        Angkatan:
+          type: integer
+          example: 2023
+
+    MahasiswaInput:
+      type: object
+      required:
+        - NIM
+        - Nama
+        - Prodi
+      properties:
+        NIM:
+          type: string
+          example: "G.211.23.0068"
+        Nama:
+          type: string
+          example: "Bagus Ultraman"
+        Prodi:
+          type: string
+          example: "Teknik Informatika"
+        Angkatan:
+          type: integer
+          example: 2023
+
+    MataKuliah:
+      type: object
+      properties:
+        Kode:
+          type: string
+          example: "TI101"
+        Mata Kuliah:
+          type: string
+          example: "Rekayasa Web"
+        SKS:
+          type: integer
+          example: 3
+        Semester:
+          type: integer
+          example: 5
+
+    MataKuliahInput:
+      type: object
+      required:
+        - Kode
+        - Mata Kuliah
+      properties:
+        Kode:
+          type: string
+          example: "TI102"
+        Mata Kuliah:
+          type: string
+          example: "Computer Gaming"
+        SKS:
+          type: integer
+          example: 3
+        Semester:
+          type: integer
+          example: 5
+
+    Nilai:
+      type: object
+      properties:
+        Kode_MK:
+          type: string
+          example: "TI101"
+        Mata Kuliah:
+          type: string
+          example: "Rekayasa Web"
+        Nilai:
+          type: string
+          example: "A"
+
+    NilaiInput:
+      type: object
+      required:
+        - Kode_MK
+        - Mata Kuliah
+        - Nilai
+      properties:
+        Kode_MK:
+          type: string
+          example: "TI102"
+        Mata Kuliah:
+          type: string
+          example: "Computer Gaming"
+        Nilai:
+          type: string
+          example: "B"
